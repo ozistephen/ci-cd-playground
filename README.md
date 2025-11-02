@@ -1,6 +1,5 @@
-# GitHub Actions CI/CD Newbie Pack
+# CI/CD Playground
 
-This repo is a hands-on lab to take you from zero to shipping with GitHub Actions.
 
 ## What's inside
 - Simple Node.js web app (Express)
@@ -14,4 +13,3 @@ This repo is a hands-on lab to take you from zero to shipping with GitHub Action
 - CodeQL workflow (security scanning)
 - Examples of permissions hardening, concurrency, environment protection
 
-> Tip: Start at `README_STEP_BY_STEP.md` for a full walkthrough.
