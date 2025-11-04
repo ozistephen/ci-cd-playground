@@ -1,0 +1,54 @@
+name: CI
+on:
+  pull_request:
+    paths-ignore: ["docs/**", "*.md"]
+  push:
+    branches: [ "main" ]
+permissions:
+  contents: read
+  actions: read
+  checks: write
+  security-events: write
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      app_changed: ${{ steps.filter.outputs.app }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            app:
+              - 'app/**'
+              - 'Dockerfile'
+  build-test:
+  if: ${{ needs.detect-changes.outputs.app_changed == 'true' || github.event_name == 'pull_request' }}
+  needs: detect-changes
+  runs-on: ubuntu-latest
+  strategy:
+    fail-fast: false
+    matrix:
+      node: [18, 20]
+
+  steps:
+    - uses: ./.github/actions/setup-node-tooling
+      with:
+        node-version: ${{ matrix.node }}
+
+    - run: npm run lint
+      working-directory: app
+
+    - run: npm test
+      working-directory: app
+
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: junit-${{ matrix.node }}
+        path: app/reports/junit.xml

@@ -1,0 +1,16 @@
+name: Reusable Deploy
+on:
+  workflow_call:
+    inputs:
+      image:
+        required: true
+        type: string
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pretend deploy (replace with real IaC)
+        id: run
+        run: |
+          echo "Deploying ${{ inputs.image }}"
+          echo "url=https://example.com" >> $GITHUB_OUTPUT
